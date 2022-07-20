@@ -1,25 +1,19 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import StartQuiz from "./components/StartQuiz";
+import Quiz from "./components/Quiz";
 
-function App() {
+export default function App() {
+  /* State is responsible for starting the quiz
+  false = load <Quiz />, true = load <StartQuiz /> */
+  const [startState, setStartState] = React.useState(false);
+
+  function loadQuiz() {
+    setStartState((prevStart) => !prevStart);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="quizzical">
+      {startState ? <Quiz /> : <StartQuiz loadQuiz={loadQuiz} />}
     </div>
   );
 }
-
-export default App;
