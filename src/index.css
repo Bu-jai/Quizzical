@@ -26,13 +26,13 @@ h1, h2 {
 
 .start-title {
   margin-bottom: 0px;
-  font-size: 31px;
+  font-size: 1.9rem;
 }
 
 .start-description {
   margin-top: 10px;
   font-weight: 400;
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 .start-button {
@@ -42,10 +42,62 @@ h1, h2 {
   border: none;
   background-color: #4d5b9e;
   color: #f5f7fb;
-  font-size: 16px;
+  font-size: 1rem;
+  font-family: "Inter", sans-serif;
   cursor: pointer;
 }
 
 .start-button:active {
   box-shadow: inset 5px 5px 10px -3px rgba(0, 0, 0, 0.7);
+}
+
+.quiz {
+  margin: 5%;
+}
+
+.quiz-question {
+  font-size: 1.5rem;
+  color: #293264;
+}
+
+.answers {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.quiz-answer {
+  padding: 4px 20px;
+  border-radius: 8px;
+  border: 1px black solid;
+  background-color: transparent;
+  color: #293264;
+  font-size: 1rem;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.separator {
+  margin-top: 20px;
+  border: 0.8px solid #dbdef0;
+}
+
+.quiz-button {
+  margin-bottom: 5%;
+  padding: 15px 22px;
+  border: none;
+  background-color: #4d5b9e;
+  color: #f5f7fb;
+  border-radius: 10px;
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
