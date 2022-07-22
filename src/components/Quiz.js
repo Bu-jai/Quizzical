@@ -1,8 +1,43 @@
 import React from "react";
 
 export default function Quiz(props) {
-  const answers = props.answers.map((answer) => {
-    return <button className="quiz-answer">{answer} </button>;
+  function findStyle(selectedAns, index) {
+    if (props.showQuizAnswers) {
+      if (
+        selectedAns === props.correctAnswer &&
+        index === props.correctAnswer
+      ) {
+        return {
+          backgroundColor: "#94D7A2",
+          border: "none",
+        };
+      } else if (selectedAns === index) {
+        return {
+          backgroundColor: "#F8BCBC",
+          border: "none",
+          opacity: 0.5,
+        };
+      }
+    } else if (selectedAns === index) {
+      return {
+        backgroundColor: "#D6DBF5",
+        border: "none",
+      };
+    }
+  }
+
+  // props.answers[index] determines the answer based on the answers array in the question object
+  const answers = props.answers.map((answer, index) => {
+    return (
+      <button
+        key={index}
+        className="quiz-answer"
+        style={findStyle(props.selectedAnswer, props.answers[index])}
+        onClick={() => props.handleSelectAnswer(props.id, props.answers[index])}
+      >
+        {answer}
+      </button>
+    );
   });
 
   return (
@@ -13,12 +48,3 @@ export default function Quiz(props) {
     </div>
   );
 }
-
-/* <h2 className="quiz-question">How would one say goodbye in Spanish?</h2>
-<div className="answers">
-  <button className="quiz-answer">Adios</button>
-  <button className="quiz-answer">Hola</button>
-  <button className="quiz-answer">Au Revoir</button>
-  <button className="quiz-answer">Ciao</button>
-</div>
-<hr className="separator" /> */

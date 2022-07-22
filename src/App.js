@@ -5,23 +5,9 @@ import { nanoid } from "nanoid";
 
 export default function App() {
   const [startQuiz, setStartQuiz] = React.useState(false); //change back to false
+  const [showQuizAnswers, setShowQuizAnswers] = React.useState(false);
   const [questions, setQuestions] = React.useState([]);
   const [score, setScore] = React.useState(0);
-
-  // console.log(questions);
-
-  const quizElements = questions.map((question) => {
-    return (
-      <Quiz
-        key={question.id}
-        id={question.id}
-        question={question.title}
-        answers={question.answers}
-        correctAnswer={question.correctAnswer}
-        isSelected={question.isSelected}
-      />
-    );
-  });
 
   React.useEffect(() => {
     fetch("https://opentdb.com/api.php?amount=5")
@@ -36,16 +22,57 @@ export default function App() {
                 question.correct_answer
               ),
               correctAnswer: question.correct_answer,
-              isSelected: false,
+              selectedAnswer: "",
+              isAnswered: false,
             };
           })
         )
       );
   }, []);
 
+  console.info(questions);
+
   function loadQuiz() {
     setStartQuiz((prevStart) => !prevStart);
   }
+
+  function showAnswers() {
+    setShowQuizAnswers((prevShow) => !prevShow);
+  }
+
+  /* this function is for:
+  - updating questions state (selectedAnswer, and isAnswered)
+  */
+  function handleSelectAnswer(id, answer) {
+    setQuestions((prevQuestions) => {
+      return prevQuestions.map((question) => {
+        if (question.id === id) {
+          return {
+            ...question,
+            selectedAnswer: answer,
+            // isAnswered: true,
+          };
+        } else {
+          return question;
+        }
+      });
+    });
+  }
+
+  const quizElements = questions.map((question) => {
+    return (
+      <Quiz
+        key={question.id}
+        id={question.id}
+        question={question.title}
+        correctAnswer={question.correctAnswer}
+        answers={question.answers}
+        selectedAnswer={question.selectedAnswer}
+        showQuizAnswers={showQuizAnswers}
+        handleSelectAnswer={handleSelectAnswer}
+      />
+    );
+  });
 
   return (
     <div className="quizzical">
@@ -53,7 +80,9 @@ export default function App() {
         <div className="quiz">
           {quizElements}
           <div className="button-container">
-            <button className="quiz-button">Check answers</button>
+            <button className="quiz-button" onClick={showAnswers}>
+              Check answers
+            </button>
           </div>
         </div>
       ) : (
