@@ -1,48 +1,59 @@
 import React from "react";
+// import { useWindowSize } from "react-use";
 import StartQuiz from "./components/StartQuiz";
 import Quiz from "./components/Quiz";
 import { nanoid } from "nanoid";
+import Confetti from "react-confetti";
 
 export default function App() {
-  const [startQuiz, setStartQuiz] = React.useState(false); //change back to false
-  const [showQuizAnswers, setShowQuizAnswers] = React.useState(false);
   const [questions, setQuestions] = React.useState([]);
   const [score, setScore] = React.useState(0);
+  const [startQuiz, setStartQuiz] = React.useState(true); //change back to false
+  const [showQuizAnswers, setShowQuizAnswers] = React.useState(false);
+  const [allAnswered, setAllAnswered] = React.useState(false);
+  const [resetPromt, setResetPrompt] = React.useState(false);
+  const [fetchQuestions, setFetchQuestions] = React.useState(false); // value doesn't matter, just used to trigger the useEffect
+  const width = window.innerWidth;
+  const height = window.innerHeight;
 
   React.useEffect(() => {
     fetch("https://opentdb.com/api.php?amount=5")
       .then((res) => res.json())
-      .then((data) =>
-        setQuestions(
+      .then((data) => {
+        return setQuestions(
           data.results.map((question) => {
+            const answers = question.incorrect_answers.concat(
+              question.correct_answer
+            );
             return {
               id: nanoid(),
               title: question.question,
-              answers: question.incorrect_answers.concat(
-                question.correct_answer
-              ),
+              answers: shuffleAnswer(answers),
               correctAnswer: question.correct_answer,
               selectedAnswer: "",
               isAnswered: false,
             };
           })
-        )
-      );
-  }, []);
+        );
+      });
+  }, [fetchQuestions]);
 
-  console.info(questions);
-
-  function loadQuiz() {
-    setStartQuiz((prevStart) => !prevStart);
+  // Shuffle the answers
+  function shuffleAnswer(array) {
+    let currentIndex = array.length,
+      randomIndex;
+    while (currentIndex != 0) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex],
+        array[currentIndex],
+      ];
+    }
+    return array;
   }
 
-  function showAnswers() {
-    setShowQuizAnswers((prevShow) => !prevShow);
-  }
-
-  /* this function is for:
-  - updating questions state (selectedAnswer, and isAnswered)
-  */
+  // Puts the selected answer into the selectedAnswer property of the question object
   function handleSelectAnswer(id, answer) {
     setQuestions((prevQuestions) => {
       return prevQuestions.map((question) => {
@@ -50,13 +61,48 @@ export default function App() {
           return {
             ...question,
             selectedAnswer: answer,
-            // isAnswered: true,
+            isAnswered: true,
           };
         } else {
           return question;
         }
       });
     });
+  }
+
+  // Counts the number of correct answers & determines if the user can submit the quiz
+  function setUserScore() {
+    let answeredQuestion = 0;
+    for (let i = 0; i < questions.length; i++) {
+      if (questions[i].isAnswered === true) {
+        answeredQuestion++;
+      }
+    }
+    if (answeredQuestion === questions.length) {
+      for (let i = 0; i < questions.length; i++) {
+        if (questions[i].selectedAnswer === questions[i].correctAnswer) {
+          setScore((prevScore) => prevScore + 1);
+        }
+      }
+      setAllAnswered((prevAllAnswered) => !prevAllAnswered);
+      setShowQuizAnswers((prevShow) => !prevShow); // false -> true
+      setResetPrompt((prevReset) => !prevReset); // false -> true
+    } else {
+      alert("You must answer all questions. 📚");
+    }
+  }
+
+  // Resets the quiz
+  function resetQuiz() {
+    setShowQuizAnswers((prevShow) => !prevShow);
+    setResetPrompt((prevReset) => !prevReset);
+    setAllAnswered((prevAllAnswered) => !prevAllAnswered);
+    setFetchQuestions((prevFetch) => !prevFetch);
+    setScore(0);
+  }
+
+  function loadQuiz() {
+    setStartQuiz((prevStart) => !prevStart);
   }
 
   const quizElements = questions.map((question) => {
@@ -76,14 +122,28 @@ export default function App() {
 
   return (
     <div className="quizzical">
+      {score >= 4 && <Confetti width={width} height={height} />}
       {startQuiz ? (
         <div className="quiz">
           {quizElements}
-          <div className="button-container">
-            <button className="quiz-button" onClick={showAnswers}>
-              Check answers
-            </button>
-          </div>
+          {resetPromt && allAnswered ? (
+            <div className="score-container">
+              <div className="quiz-score">
+                <h3 className="user-score">{`You scored ${score}/${questions.length} correct answers`}</h3>
+                <div className="button-container">
+                  <button className="quiz-button" onClick={resetQuiz}>
+                    Play Again
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="button-container">
+              <button className="quiz-button" onClick={setUserScore}>
+                Check answers
+              </button>
+            </div>
+          )}
         </div>
       ) : (
         <StartQuiz loadQuiz={loadQuiz} />

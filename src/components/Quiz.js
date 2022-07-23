@@ -1,24 +1,21 @@
 import React from "react";
 
 export default function Quiz(props) {
-  function findStyle(selectedAns, index) {
+  function findStyle(answer, index) {
     if (props.showQuizAnswers) {
-      if (
-        selectedAns === props.correctAnswer &&
-        index === props.correctAnswer
-      ) {
+      if (answer === props.correctAnswer && index === props.correctAnswer) {
         return {
           backgroundColor: "#94D7A2",
           border: "none",
         };
-      } else if (selectedAns === index) {
+      } else if (answer === index) {
         return {
           backgroundColor: "#F8BCBC",
           border: "none",
           opacity: 0.5,
         };
       }
-    } else if (selectedAns === index) {
+    } else if (answer === index) {
       return {
         backgroundColor: "#D6DBF5",
         border: "none",

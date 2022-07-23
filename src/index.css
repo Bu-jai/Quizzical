@@ -13,6 +13,7 @@ h1, h2 {
   font-family: "Karla", sans-serif;
 }
 
+/* -------------------------- */
 .start {
   display: flex;
   flex-direction: column;
@@ -50,9 +51,12 @@ h1, h2 {
 .start-button:active {
   box-shadow: inset 5px 5px 10px -3px rgba(0, 0, 0, 0.7);
 }
-
+/* -------------------------- */
 .quiz {
-  margin: 5%;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  margin-right: 5%;
+  margin-left: 5%;
 }
 
 .quiz-question {
@@ -82,7 +86,27 @@ h1, h2 {
   margin-top: 20px;
   border: 0.8px solid #dbdef0;
 }
+/* -------------------------- */
+.score-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
+.quiz-score {
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  gap: 20px;
+}
+
+.user-score {
+  padding-top: 15px;
+  color: #293264;
+  font-weight: 700;
+  font-size: 1rem;
+}
+/* -------------------------- */
 .button-container {
   display: flex;
   justify-content: center;
@@ -91,12 +115,12 @@ h1, h2 {
 }
 
 .quiz-button {
-  margin-bottom: 5%;
   padding: 15px 22px;
   border: none;
   background-color: #4d5b9e;
   color: #f5f7fb;
   border-radius: 10px;
+  width: 150px;
   font-family: "Inter", sans-serif;
   font-weight: 600;
   font-size: 0.8rem;
