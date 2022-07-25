@@ -7,7 +7,7 @@ import Confetti from "react-confetti";
 export default function App() {
   const [questions, setQuestions] = React.useState([]);
   const [score, setScore] = React.useState(0);
-  const [startQuiz, setStartQuiz] = React.useState(true); //change back to false
+  const [startQuiz, setStartQuiz] = React.useState(false);
   const [showQuizAnswers, setShowQuizAnswers] = React.useState(false);
   const [allAnswered, setAllAnswered] = React.useState(false);
   const [resetPromt, setResetPrompt] = React.useState(false);
