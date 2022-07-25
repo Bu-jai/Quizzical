@@ -1,5 +1,4 @@
 import React from "react";
-// import { useWindowSize } from "react-use";
 import StartQuiz from "./components/StartQuiz";
 import Quiz from "./components/Quiz";
 import { nanoid } from "nanoid";
@@ -16,19 +15,34 @@ export default function App() {
   const width = window.innerWidth;
   const height = window.innerHeight;
 
+  console.log(questions);
+
   React.useEffect(() => {
     fetch("https://opentdb.com/api.php?amount=5")
       .then((res) => res.json())
       .then((data) => {
         return setQuestions(
           data.results.map((question) => {
-            const answers = question.incorrect_answers.concat(
+            // make sure in True/false questions, "True" is always the first option and "False" is always the second option
+            let answers = question.incorrect_answers.concat(
               question.correct_answer
             );
+
+            if (question.correct_answer === "True") {
+              const temp = [question.correct_answer];
+              answers = temp.concat(question.incorrect_answers);
+            } else if (question.correct_answer === "False") {
+              answers = question.incorrect_answers.concat(
+                question.correct_answer
+              );
+            } else {
+              answers = shuffleAnswer(answers);
+            }
+
             return {
               id: nanoid(),
               title: question.question,
-              answers: shuffleAnswer(answers),
+              answers: answers,
               correctAnswer: question.correct_answer,
               selectedAnswer: "",
               isAnswered: false,
@@ -42,7 +56,7 @@ export default function App() {
   function shuffleAnswer(array) {
     let currentIndex = array.length,
       randomIndex;
-    while (currentIndex != 0) {
+    while (currentIndex !== 0) {
       randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex--;
       [array[currentIndex], array[randomIndex]] = [
@@ -85,8 +99,8 @@ export default function App() {
         }
       }
       setAllAnswered((prevAllAnswered) => !prevAllAnswered);
-      setShowQuizAnswers((prevShow) => !prevShow); // false -> true
-      setResetPrompt((prevReset) => !prevReset); // false -> true
+      setShowQuizAnswers((prevShow) => !prevShow);
+      setResetPrompt((prevReset) => !prevReset);
     } else {
       alert("You must answer all questions. 📚");
     }
